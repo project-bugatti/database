@@ -7,7 +7,7 @@ services:
       - 80:80
       - 443:443
     networks:
-      - bugatti-net
+      - gcmedia-net
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.toml:/traefik.toml
@@ -19,15 +19,15 @@ services:
       - .env
     restart: always
     networks:
-      - bugatti-net
+      - gcmedia-net
     ports:
       - "3001:80"
     labels:
       - "traefik.backend=web"
-      - "traefik.docker.network=bugatti-net"
+      - "traefik.docker.network=gcmedia-net"
       - "traefik.enable=true"
       - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:www.thegc.cf"
+      - "traefik.frontend.rule=Host:www.thegc.cf,thegc.cf"
       - "traefik.port=80"
   api:
     image: "gcmedia/api:${API_TAG}"
@@ -35,16 +35,43 @@ services:
       - .env
     restart: always
     networks:
-      - bugatti-net
-    ports:
-      - "3000:3000"
+      - gcmedia-net
+    expose:
+      - "3000"
     labels:
       - "traefik.backend=api"
-      - "traefik.docker.network=bugatti-net"
+      - "traefik.docker.network=gcmedia-net"
       - "traefik.enable=true"
       - "traefik.protocol=http"
       - "traefik.frontend.rule=Host:api.thegc.cf"
       - "traefik.port=3000"
+  database:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - gcmedia-net
+    expose:
+      - "3306"
+    volumes:
+      - ~/data/mysql:/var/lib/mysql
+      - ./scripts.sql:/docker-entrypoint-initdb.d/scripts.sql
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - gcmedia-net
+    expose:
+      - "8080"
+    labels:
+      - "traefik.backend=adminer"
+      - "traefik.docker.network=gcmedia-net"
+      - "traefik.enable=true"
+      - "traefik.protocol=http"
+      - "traefik.frontend.rule=Host:adminer.thegc.cf"
+      - "traefik.port=8080"
   portainer:
     image: portainer/portainer
     restart: always
@@ -52,19 +79,20 @@ services:
       - "9000"
     command: -H unix:///var/run/docker.sock
     networks:
-      - bugatti-net
+      - gcmedia-net
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-volume:/data
     labels:
       - "traefik.frontend.rule=Host:portainer.thegc.cf"
       - "traefik.enable=true"
-      - "traefik.docker.network=bugatti-net"
+      - "traefik.docker.network=gcmedia-net"
       - "traefik.port=9000"
       - "traefik.backend=portainer"
 networks:
-  bugatti-net:
+  gcmedia-net:
     external: true
 volumes:
   portainer-volume:
     external: true
+  mysql:
