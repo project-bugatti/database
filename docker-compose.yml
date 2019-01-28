@@ -1,0 +1,70 @@
+version: '3.1'
+services:
+  traefik:
+    image: traefik:1.5.4
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - bugatti-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+      - ./acme.json:/acme.json
+    container_name: traefik
+  web:
+    image: "gcmedia/web:${WEB_TAG}"
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - bugatti-net
+    ports:
+      - "3001:80"
+    labels:
+      - "traefik.backend=web"
+      - "traefik.docker.network=bugatti-net"
+      - "traefik.enable=true"
+      - "traefik.protocol=http"
+      - "traefik.frontend.rule=Host:www.thegc.cf"
+      - "traefik.port=80"
+  api:
+    image: "gcmedia/api:${API_TAG}"
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - bugatti-net
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.backend=api"
+      - "traefik.docker.network=bugatti-net"
+      - "traefik.enable=true"
+      - "traefik.protocol=http"
+      - "traefik.frontend.rule=Host:api.thegc.cf"
+      - "traefik.port=3000"
+  portainer:
+    image: portainer/portainer
+    restart: always
+    expose:
+      - "9000"
+    command: -H unix:///var/run/docker.sock
+    networks:
+      - bugatti-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-volume:/data
+    labels:
+      - "traefik.frontend.rule=Host:portainer.thegc.cf"
+      - "traefik.enable=true"
+      - "traefik.docker.network=bugatti-net"
+      - "traefik.port=9000"
+      - "traefik.backend=portainer"
+networks:
+  bugatti-net:
+    external: true
+volumes:
+  portainer-volume:
+    external: true
