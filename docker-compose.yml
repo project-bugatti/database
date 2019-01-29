@@ -21,8 +21,8 @@ services:
       - configs.env
     networks:
       - gcmedia-net
-    expose:
-      - "3306"
+    ports:
+      - "3306:3306"
     volumes:
       - ~/data/mysql:/var/lib/mysql
       - ./scripts.sql:/docker-entrypoint-initdb.d/scripts.sql
@@ -68,8 +68,6 @@ services:
       - "traefik.backend=portainer"
 networks:
   gcmedia-net:
-    external: true
 volumes:
   portainer-volume:
     external: true
-  mysql:
