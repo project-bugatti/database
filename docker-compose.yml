@@ -38,6 +38,7 @@ services:
     restart: always
     networks:
       - gcmedia-net
+    container_name: adminer
     expose:
       - "8080"
     labels:
@@ -55,6 +56,7 @@ services:
     command: -H unix:///var/run/docker.sock
     networks:
       - gcmedia-net
+    container_name: portainer
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-volume:/data
