@@ -13,38 +13,6 @@ services:
       - ./traefik.toml:/traefik.toml
       - ./acme.json:/acme.json
     container_name: traefik
-  web:
-    image: "gcmedia/web:${WEB_TAG}"
-    env_file:
-      - .env
-    restart: always
-    networks:
-      - gcmedia-net
-    ports:
-      - "3001:80"
-    labels:
-      - "traefik.backend=web"
-      - "traefik.docker.network=gcmedia-net"
-      - "traefik.enable=true"
-      - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:www.thegc.cf,thegc.cf"
-      - "traefik.port=80"
-  api:
-    image: "gcmedia/api:${API_TAG}"
-    env_file:
-      - .env
-    restart: always
-    networks:
-      - gcmedia-net
-    expose:
-      - "3000"
-    labels:
-      - "traefik.backend=api"
-      - "traefik.docker.network=gcmedia-net"
-      - "traefik.enable=true"
-      - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:api.thegc.cf"
-      - "traefik.port=3000"
   database:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -58,6 +26,13 @@ services:
     volumes:
       - ~/data/mysql:/var/lib/mysql
       - ./scripts.sql:/docker-entrypoint-initdb.d/scripts.sql
+    labels:
+      - "traefik.backend=database"
+      - "traefik.docker.network=gcmedia-net"
+      - "traefik.enable=true"
+      - "traefik.protocol=http"
+      - "traefik.frontend.rule=Host:database.thegc.cf"
+      - "traefik.port=3306"
   adminer:
     image: adminer
     restart: always

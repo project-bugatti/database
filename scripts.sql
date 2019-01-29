@@ -1,8 +1,6 @@
 CREATE DATABASE `production`;
 USE `production`;
 
-GRANT ALL PRIVILEGES ON production.* TO 'tgalske';
-
 CREATE TABLE members(
   member_id char(36) PRIMARY KEY,
   firstname varchar(255),
