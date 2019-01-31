@@ -13,26 +13,25 @@ services:
       - ./traefik.toml:/traefik.toml
       - ./acme.json:/acme.json
     container_name: traefik
-  database:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+  postgres:
+    image: postgres
     restart: always
     env_file:
       - configs.env
     networks:
       - gcmedia-net
     ports:
-      - "3306:3306"
-    volumes:
-      - ~/data/mysql:/var/lib/mysql
-      - ./scripts.sql:/docker-entrypoint-initdb.d/scripts.sql
+      - "5432:5432"
+   volumes:
+     - ~/data/postgres:/var/lib/postgresql/data
+     - ./scripts.sql:/docker-entrypoint-initdb.d
     labels:
       - "traefik.backend=database"
       - "traefik.docker.network=gcmedia-net"
       - "traefik.enable=true"
       - "traefik.protocol=http"
       - "traefik.frontend.rule=Host:database.thegc.cf"
-      - "traefik.port=3306"
+      - "traefik.port=5432"
   adminer:
     image: adminer
     restart: always
