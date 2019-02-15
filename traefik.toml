@@ -16,7 +16,7 @@ defaultEntryPoints = ["https","http"]
 
 [docker]
 endpoint = "unix:///var/run/docker.sock"
-domain = "thegc.cf"
+domain = "thegc.website"
 watch = true
 exposedByDefault = false
 
