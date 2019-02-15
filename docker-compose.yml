@@ -30,7 +30,7 @@ services:
       - "traefik.docker.network=gcmedia-net"
       - "traefik.enable=true"
       - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:database.thegc.cf"
+      - "traefik.frontend.rule=Host:database.thegc.website"
       - "traefik.port=5432"
   adminer:
     image: adminer
@@ -45,28 +45,7 @@ services:
       - "traefik.docker.network=gcmedia-net"
       - "traefik.enable=true"
       - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:adminer.thegc.cf"
+      - "traefik.frontend.rule=Host:adminer.thegc.website"
       - "traefik.port=8080"
-  portainer:
-    image: portainer/portainer
-    restart: always
-    expose:
-      - "9000"
-    command: -H unix:///var/run/docker.sock
-    networks:
-      - gcmedia-net
-    container_name: portainer
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer-volume:/data
-    labels:
-      - "traefik.frontend.rule=Host:portainer.thegc.cf"
-      - "traefik.enable=true"
-      - "traefik.docker.network=gcmedia-net"
-      - "traefik.port=9000"
-      - "traefik.backend=portainer"
 networks:
   gcmedia-net:
-volumes:
-  portainer-volume:
-    external: true
