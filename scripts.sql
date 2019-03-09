@@ -1,9 +1,9 @@
 CREATE TABLE members (
   member_id uuid NOT NULL PRIMARY KEY,
-  firstname text NULL,
-  lastname text NULL,
+  firstname text NOT NULL,
+  lastname text NOT NULL,
   nickname text NULL,
-  phone text NULL,
+  phone text NOT NULL,
   is_active boolean NULL DEFAULT TRUE
 );
 
