@@ -10,10 +10,10 @@ CREATE TABLE members (
 CREATE TABLE quotes (
   quote_id uuid NOT NULL PRIMARY KEY,
   quote_text text NOT NULL,
-  author_member_id uuid NOT NULL,
-  content_id uuid NULL,
-  is_visible boolean DEFAULT TRUE,
-  FOREIGN KEY (author_member_id) REFERENCES members(member_id)
+  author_member_id uuid NOT NULL REFERENCES members(member_id),
+  quote_date date NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  is_visible boolean NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE media (
@@ -26,4 +26,12 @@ CREATE TABLE media (
   file_type varchar(10) NULL
 );
 
+CREATE TABLE members_media (
+  member_id uuid NOT NULL REFERENCES members(member_id),
+  media_id uuid NOT NULL REFERENCES media(media_id)
+);
 
+CREATE TABLE quotes_media (
+  quote_id uuid NOT NULL REFERENCES quotes(quote_id),
+  media_id uuid NOT NULL REFERENCES media(media_id)
+);
