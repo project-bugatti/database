@@ -23,7 +23,7 @@ CREATE TABLE media (
   uploaded_at timestamptz NOT NULL DEFAULT now(),
   media_date date NULL,
   is_visible boolean NOT NULL DEFAULT TRUE,
-  file_type varchar(10) NULL
+  file_type varchar(10) NOT NULL
 );
 
 CREATE TABLE members_media (
