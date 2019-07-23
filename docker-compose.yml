@@ -1,18 +1,5 @@
 version: '3.1'
 services:
-  traefik:
-    image: traefik:1.5.4
-    restart: always
-    ports:
-      - 80:80
-      - 443:443
-    networks:
-      - gcmedia-net
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
-      - ./acme.json:/acme.json
-    container_name: traefik
   postgres:
     image: postgres
     restart: always
@@ -32,20 +19,5 @@ services:
       - "traefik.protocol=http"
       - "traefik.frontend.rule=Host:database.thegc.website"
       - "traefik.port=5432"
-  adminer:
-    image: adminer
-    restart: always
-    networks:
-      - gcmedia-net
-    container_name: adminer
-    expose:
-      - "8080"
-    labels:
-      - "traefik.backend=adminer"
-      - "traefik.docker.network=gcmedia-net"
-      - "traefik.enable=true"
-      - "traefik.protocol=http"
-      - "traefik.frontend.rule=Host:adminer.thegc.website"
-      - "traefik.port=8080"
 networks:
   gcmedia-net:
