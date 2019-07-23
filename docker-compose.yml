@@ -11,7 +11,6 @@ services:
       - "5432:5432"
     volumes:
       - ~/data/postgres:/var/lib/postgresql/data
-      - ./scripts.sql:/docker-entrypoint-initdb.d/scripts.sql
     labels:
       - "traefik.backend=database"
       - "traefik.docker.network=gcmedia-net"
